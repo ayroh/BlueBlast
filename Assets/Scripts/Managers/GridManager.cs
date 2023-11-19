@@ -35,7 +35,7 @@ public class GridManager : Singleton<GridManager>
             CellType.CubeRed,
         };
 
-    private void Start()
+    public void StartGame()
     {
         Application.targetFrameRate = 60;
 
@@ -55,7 +55,7 @@ public class GridManager : Singleton<GridManager>
         GoalManager.instance.SetCurrentLevelGoals();
         GoalManager.instance.SetNumberOfMoves();
         borderLeftBottom = new Vector2(spawnPoint.x - (cellSize.x * borderScale) / 2, spawnPoint.y - (cellSize.y * borderScale) / 2);
-
+        border.gameObject.SetActive(true);
     }
 
 

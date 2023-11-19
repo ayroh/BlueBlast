@@ -1,20 +1,22 @@
-#if UNITY_EDITOR
-
-using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
+using System;
 
-public class LevelEditor : EditorWindow
+public class IngameLevelEditor : MonoBehaviour
 {
+    [SerializeField] private GameObject ManagersParent;
+    [SerializeField] private GameObject BlackScreen;
+
     private string gridSizeString = "5";
-    private static int gridSize = 5;
+    private int gridSize = 5;
 
     private string movesString = "20";
-    private static int moves = 20;
+    private int moves = 20;
 
-    private static Dictionary<CellType, Texture2D> cellTypeTextureDictionary = new Dictionary<CellType, Texture2D>();
-    private static List<CellType> cellTypeList = new List<CellType>();
+    public Dictionary<CellType, Texture2D> cellTypeTextureDictionary = new Dictionary<CellType, Texture2D>();
+    private List<CellType> cellTypeList = new List<CellType>();
     private CellType activeCellType = CellType.Empty;
 
     private string cubeYellowGoalString;
@@ -33,34 +35,38 @@ public class LevelEditor : EditorWindow
     private int balloonGoal;
     private int duckGoal;
 
-    [MenuItem("Level/Level Editor")]
-    public static void Init()
+    private void Start()
     {
         InitializeCellList();
-        var wnd = GetWindow<LevelEditor>();
-        wnd.titleContent = new GUIContent("Level Editor");
     }
 
     private void OnGUI()
     {
+        GUILayout.BeginArea(new Rect(300, 500, 500, 1500));
+        GUI.skin.label.fontSize = 40;
+        GUILayout.BeginHorizontal();
         GUILayout.Label("Grid Size");
-        GUILayout.Space(10);
-        gridSizeString = EditorGUILayout.TextField("Grid Size: ", gridSizeString);
-        GUILayout.Space(10);
+        gridSizeString = GUI.TextField(new Rect(250, 20, 60, 20), gridSizeString);
+        GUILayout.EndHorizontal();
         if (GUILayout.Button("Create Grid"))
         {
             CreateGrid();
         }
         LoadCellTextures();
-        DrawCellTypeSelectionButtons();
-        DrawGridButtons();
         DrawGoals();
 
+        GUILayout.Space(20);
+        GUILayout.BeginHorizontal();
         GUILayout.Label("Moves");
-        GUILayout.Space(10);
-        movesString = EditorGUILayout.TextField("Number of Moves: ", movesString);
+        movesString = GUI.TextField(new Rect(130, 370, 200, 20), movesString);
+        GUILayout.EndHorizontal();
 
-        Repaint();
+        DrawCellTypeSelectionButtons();
+        DrawGridButtons();
+
+        
+
+        GUILayout.EndArea();
     }
 
     private void CreateGrid()
@@ -71,6 +77,10 @@ public class LevelEditor : EditorWindow
             return;
         }
 
+        if (gridSize > 10)
+            gridSize = 10;
+        if (gridSize < 4)
+            gridSize = 4;
         InitializeCellList();
     }
 
@@ -188,69 +198,70 @@ public class LevelEditor : EditorWindow
         var content = new GUIContent();
         content.image = cellTypeTextureDictionary[CellType.CubeYellow];
         GUILayout.BeginVertical();
-        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(30), GUILayout.Height(50));
-        cubeYellowGoalString = EditorGUILayout.TextField("", cubeYellowGoalString, GUILayout.Width(30), GUILayout.Height(20));
+        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(60), GUILayout.Height(70));
+        cubeYellowGoalString = GUI.TextField(new Rect(0, 230, 50, 20), cubeYellowGoalString);
         GUILayout.EndVertical();
 
         content.image = cellTypeTextureDictionary[CellType.CubeRed];
         GUILayout.BeginVertical();
-        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(30), GUILayout.Height(50));
-        cubeRedGoalString = EditorGUILayout.TextField("", cubeRedGoalString, GUILayout.Width(30), GUILayout.Height(20));
+        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(60), GUILayout.Height(70));
+        cubeRedGoalString = GUI.TextField(new Rect(100, 230, 50, 20), cubeRedGoalString);
         GUILayout.EndVertical();
 
         content.image = cellTypeTextureDictionary[CellType.CubeBlue];
         GUILayout.BeginVertical();
-        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(30), GUILayout.Height(50));
-        cubeBlueGoalString = EditorGUILayout.TextField("", cubeBlueGoalString, GUILayout.Width(30), GUILayout.Height(20));
+        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(60), GUILayout.Height(70));
+        cubeBlueGoalString = GUI.TextField(new Rect(200, 230, 50, 20), cubeBlueGoalString);
         GUILayout.EndVertical();
 
 
         content.image = cellTypeTextureDictionary[CellType.CubeGreen];
         GUILayout.BeginVertical();
-        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(30), GUILayout.Height(50));
-        cubeGreenGoalString = EditorGUILayout.TextField("", cubeGreenGoalString, GUILayout.Width(30), GUILayout.Height(20));
+        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(60), GUILayout.Height(70));
+        cubeGreenGoalString = GUI.TextField(new Rect(300, 230, 50, 20), cubeGreenGoalString);
         GUILayout.EndVertical();
 
 
         content.image = cellTypeTextureDictionary[CellType.CubePurple];
         GUILayout.BeginVertical();
-        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(30), GUILayout.Height(50));
-        cubePurpleGoalString = EditorGUILayout.TextField("", cubePurpleGoalString, GUILayout.Width(30), GUILayout.Height(20));
+        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(60), GUILayout.Height(70));
+        cubePurpleGoalString = GUI.TextField(new Rect(400, 230, 50, 20), cubePurpleGoalString);
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
 
+        GUILayout.Space(30);
         GUILayout.BeginHorizontal();
 
         content.image = cellTypeTextureDictionary[CellType.Balloon];
         GUILayout.BeginVertical();
-        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(30), GUILayout.Height(50));
-        balloonGoalString = EditorGUILayout.TextField("", balloonGoalString, GUILayout.Width(30), GUILayout.Height(20));
+        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(60), GUILayout.Height(70));
+        balloonGoalString = GUI.TextField(new Rect(0, 330, 50, 20), balloonGoalString);
         GUILayout.EndVertical();
 
         content.image = cellTypeTextureDictionary[CellType.Duck];
         GUILayout.BeginVertical();
-        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(30), GUILayout.Height(50));
-        duckGoalString = EditorGUILayout.TextField("", duckGoalString, GUILayout.Width(30), GUILayout.Height(20));
+        GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(60), GUILayout.Height(70));
+        duckGoalString = GUI.TextField(new Rect(250, 330, 50, 20), duckGoalString);
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
     }
 
-    private static void LoadCellTextures()
+    private void LoadCellTextures()
     {
         if (cellTypeTextureDictionary.Count != 0)
             return;
-        cellTypeTextureDictionary.Add(CellType.CubeYellow, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_1.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.CubeRed, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_2.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.CubeBlue, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_3.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.CubeGreen, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_4.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.CubePurple, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_5.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.Balloon, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/balloon.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.Duck, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/duck.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubeYellow, (Texture2D)Resources.Load("UI/cube_1", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubeRed, (Texture2D)Resources.Load("UI/cube_2", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubeBlue, (Texture2D)Resources.Load("UI/cube_3", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubeGreen, (Texture2D)Resources.Load("UI/cube_4", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubePurple, (Texture2D)Resources.Load("UI/cube_5", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.Balloon, (Texture2D)Resources.Load("UI/balloon", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.Duck, (Texture2D)Resources.Load("UI/duck", typeof(Texture2D)));
     }
 
-    private static void InitializeCellList()
+    private void InitializeCellList()
     {
         cellTypeList.Clear();
         for (var i = 0;i < gridSize;i++)
@@ -287,6 +298,10 @@ public class LevelEditor : EditorWindow
             numberOfMoves = moves
         };
         LevelManager.SaveLevel(levelData);
+        ManagersParent.SetActive(true);
+        GridManager.instance.StartGame();
+        BlackScreen.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     private bool SetMoves()
@@ -351,6 +366,5 @@ public class LevelEditor : EditorWindow
     {
         Debug.LogWarning(message);
     }
-}
 
-#endif
+}
