@@ -122,12 +122,6 @@ public class GoalManager : Singleton<GoalManager>
         numberOfMovesText.text = currentNumberOfMoves.ToString();
     }
 
-    public void ReleaseAllGoals()
-    {
-        for (int i = 0;i < goals.Count;++i)
-            goals[i].Release();
-    }
-
 
     private void DeleteCurrentGoals()
     {
