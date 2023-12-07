@@ -20,6 +20,7 @@ public class GameManager : Singleton<GameManager>
     private void Start()
     {
         token = source.Token;
+        GridManager.instance.StartGame();
     }
 
 

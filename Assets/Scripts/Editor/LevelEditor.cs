@@ -241,13 +241,13 @@ public class LevelEditor : EditorWindow
     {
         if (cellTypeTextureDictionary.Count != 0)
             return;
-        cellTypeTextureDictionary.Add(CellType.CubeYellow, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_1.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.CubeRed, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_2.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.CubeBlue, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_3.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.CubeGreen, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_4.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.CubePurple, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/cube_5.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.Balloon, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/balloon.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.Duck, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/UI/duck.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubeYellow, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/cube_1.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubeRed, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/cube_2.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubeBlue, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/cube_3.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubeGreen, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/cube_4.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.CubePurple, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/cube_5.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.Balloon, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/balloon.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.Duck, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/duck.png", typeof(Texture2D)));
     }
 
     private static void InitializeCellList()

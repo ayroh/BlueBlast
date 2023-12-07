@@ -17,6 +17,7 @@ public class CellElement : MonoBehaviour
 
     
 
+
     public async virtual UniTask SetNewYPosition(float newYPosition, bool fromSky)
     {
         desiredYPosition = newYPosition;
@@ -119,7 +120,7 @@ public class CellElement : MonoBehaviour
 
     public virtual void Pop(bool doGoalAnimation = true) => Release(doGoalAnimation);
 
-    public bool IsDestroyable() => celltype == CellType.Duck ? false : true;
+    public virtual bool IsDestroyable() => true;// celltype == CellType.Duck ? false : true;
 
     public virtual void Release(bool doGoalAnimation = true) => PoolManager.instance.Release(this, doGoalAnimation);
 }

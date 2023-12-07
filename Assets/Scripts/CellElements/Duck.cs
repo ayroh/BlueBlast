@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class Duck : CellElement
 {
+
+    public override bool IsDestroyable() => false;
+
+
     public override async UniTask SetNewYPosition(float yPosition, bool fromSky)
     {
         await base.SetNewYPosition(yPosition, fromSky);

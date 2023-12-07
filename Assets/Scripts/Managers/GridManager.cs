@@ -35,6 +35,7 @@ public class GridManager : Singleton<GridManager>
             CellType.CubeRed,
         };
 
+
     public void StartGame()
     {
         Application.targetFrameRate = 60;
@@ -120,88 +121,98 @@ public class GridManager : Singleton<GridManager>
         InputManager.instance.SetInputState(true);
     }
 
-    public async UniTask PopRocket(Rocket rocket)
+    public void Pop(Index index)
     {
-        if (rocket.celltype == CellType.RocketHorizontal)
-        {
-            rocket.StartRocketPopAnimation();
+        if (!IsIndexValid(index))
+            return;
 
-            int validCount = 0;
-            for (int i = 1;i < LevelManager.instance.currentLevel.gridSize.x;++i)
-            {
-                await UniTask.DelayFrame(RocketFrameCountBetweenCubes(), PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
-                validCount = 0;
-
-                Index index = new Index(rocket.index.x + i, rocket.index.y);
-                if (IsIndexValid(index))
-                {
-                    validCount++;
-                    CellElement cellElement = GetCellElement(index);
-                    if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
-                        cellElement.Pop();
-                }
-
-                index = new Index(rocket.index.x - i, rocket.index.y);
-                if (IsIndexValid(index))
-                {
-                    validCount++;
-                    CellElement cellElement = GetCellElement(index);
-                    if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
-                        cellElement.Pop();
-                }
-
-                if (validCount == 0)
-                    break;
-            }
-
-            await UniTask.WaitUntil(() => rocket.animationEnded, PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
-
-            rocket.Release();
-
-            for (int i = 0;i < LevelManager.instance.currentLevel.gridSize.x;++i)
-            {
-                ReorganizeColumn(i);
-                FillColumn(i);
-            }
-        }
-        else if (rocket.celltype == CellType.RocketVertical)
-        {
-            rocket.StartRocketPopAnimation();
-
-            int validCount = 0;
-            for (int i = 1;i < LevelManager.instance.currentLevel.gridSize.y;++i)
-            {
-                await UniTask.DelayFrame(RocketFrameCountBetweenCubes(), PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
-                validCount = 0;
-                Index index = new Index(rocket.index.x, rocket.index.y + i);
-                if (IsIndexValid(index))
-                {
-                    validCount++;
-                    CellElement cellElement = GetCellElement(index);
-                    if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
-                        cellElement.Pop();
-                }
-
-                index = new Index(rocket.index.x, rocket.index.y - i);
-                if (IsIndexValid(index))
-                {
-                    validCount++;
-                    CellElement cellElement = GetCellElement(index);
-                    if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
-                        cellElement.Pop();
-                }
-
-                if (validCount == 0)
-                    break;
-            }
-
-            await UniTask.WaitUntil(() => rocket.animationEnded, PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
-
-            rocket.Release();
-            ReorganizeColumn(rocket.index.x);
-            FillColumn(rocket.index.x);
-        }
+        CellElement cellElement = GetCellElement(index);
+        if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
+            cellElement.Pop();
     }
+
+    //public async UniTask PopRocket(Rocket rocket)
+    //{
+    //    if (rocket.celltype == CellType.RocketHorizontal)
+    //    {
+    //        rocket.StartRocketPopAnimation();
+
+    //        int validCount = 0;
+    //        for (int i = 1;i < LevelManager.instance.currentLevel.gridSize.x;++i)
+    //        {
+    //            await UniTask.DelayFrame(RocketFrameCountBetweenCubes(), PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
+    //            validCount = 0;
+
+    //            Index index = new Index(rocket.index.x + i, rocket.index.y);
+    //            if (IsIndexValid(index))
+    //            {
+    //                validCount++;
+    //                CellElement cellElement = GetCellElement(index);
+    //                if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
+    //                    cellElement.Pop();
+    //            }
+
+    //            index = new Index(rocket.index.x - i, rocket.index.y);
+    //            if (IsIndexValid(index))
+    //            {
+    //                validCount++;
+    //                CellElement cellElement = GetCellElement(index);
+    //                if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
+    //                    cellElement.Pop();
+    //            }
+
+    //            if (validCount == 0)
+    //                break;
+    //        }
+
+    //        await UniTask.WaitUntil(() => rocket.animationEnded, PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
+
+    //        rocket.Release();
+
+    //        for (int i = 0;i < LevelManager.instance.currentLevel.gridSize.x;++i)
+    //        {
+    //            ReorganizeColumn(i);
+    //            FillColumn(i);
+    //        }
+    //    }
+    //    else if (rocket.celltype == CellType.RocketVertical)
+    //    {
+    //        rocket.StartRocketPopAnimation();
+
+    //        int validCount = 0;
+    //        for (int i = 1;i < LevelManager.instance.currentLevel.gridSize.y;++i)
+    //        {
+    //            await UniTask.DelayFrame(RocketFrameCountBetweenCubes(), PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
+    //            validCount = 0;
+    //            Index index = new Index(rocket.index.x, rocket.index.y + i);
+    //            if (IsIndexValid(index))
+    //            {
+    //                validCount++;
+    //                CellElement cellElement = GetCellElement(index);
+    //                if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
+    //                    cellElement.Pop();
+    //            }
+
+    //            index = new Index(rocket.index.x, rocket.index.y - i);
+    //            if (IsIndexValid(index))
+    //            {
+    //                validCount++;
+    //                CellElement cellElement = GetCellElement(index);
+    //                if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
+    //                    cellElement.Pop();
+    //            }
+
+    //            if (validCount == 0)
+    //                break;
+    //        }
+
+    //        await UniTask.WaitUntil(() => rocket.animationEnded, PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
+
+    //        rocket.Release();
+    //        ReorganizeColumn(rocket.index.x);
+    //        FillColumn(rocket.index.x);
+    //    }
+    //}
 
 
 

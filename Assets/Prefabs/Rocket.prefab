@@ -268,7 +268,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 715951721260351395}
-  movementSO: {fileID: 11400000, guid: feaa437f76907e346a3378d336e2dcfb, type: 2}
   leftTopSprite: {fileID: 7283182307615796097}
   rightBottomSprite: {fileID: 348532478467662766}
   rocketInitialX: 0.125

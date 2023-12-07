@@ -35,7 +35,8 @@ public class Rocket : CellElement
     public override void Pop(bool doGoalAnimation = true)
     {
         SetState(CellElementState.Inactive);
-        _ = GridManager.instance.PopRocket(this);
+        StartRocketPopAnimation();
+        //_ = GridManager.instance.PopRocket(this);
     }
 
 
@@ -57,20 +58,51 @@ public class Rocket : CellElement
 
         await UniTask.WaitUntil(() => animationEnded, PlayerLoopTiming.Update, GameManager.instance.GetCancellationToken());
 
+        Release();
+
+        DoColumnOperations();
         InputManager.instance.SetInputState(true);
     }
 
-
+    private void DoColumnOperations()
+    {
+        if(celltype == CellType.RocketHorizontal)
+        {
+            for(int i = 0;i < LevelManager.instance.currentLevel.gridSize.x;++i)
+            {
+                GridManager.instance.ReorganizeColumn(i);
+                GridManager.instance.FillColumn(i);
+            }
+        }
+        else if(celltype == CellType.RocketVertical)
+        {
+            GridManager.instance.ReorganizeColumn(index.x);
+            GridManager.instance.FillColumn(index.x);
+        }
+    }
 
     private async void RightRocketAnimation()
     {
         Vector3 rightBottomPos = leftTopSprite.transform.localPosition;
         int currentFrame = 0;
         int endingFrame = GridManager.instance.RocketFrameCountBetweenCubes() * LevelManager.instance.currentLevel.gridSize.x;
+
         while (currentFrame < endingFrame)
         {
             rightBottomPos.x += GameManager.instance.movementSO.rocketSpeed;
             rightBottomSprite.transform.localPosition = rightBottomPos;
+
+            if(currentFrame % GridManager.instance.RocketFrameCountBetweenCubes() == 0)
+            {
+                if (celltype == CellType.RocketHorizontal)
+                {
+                    GridManager.instance.Pop(new Index(index.x + (currentFrame / GridManager.instance.RocketFrameCountBetweenCubes()), index.y));
+                }
+                else if (celltype == CellType.RocketVertical)
+                {
+                    GridManager.instance.Pop(new Index(index.x, index.y + (currentFrame / GridManager.instance.RocketFrameCountBetweenCubes())));
+                }
+            }
 
             currentFrame++;
             await UniTask.NextFrame(GameManager.instance.GetCancellationToken());
@@ -83,10 +115,23 @@ public class Rocket : CellElement
         Vector3 leftTopPos = leftTopSprite.transform.localPosition;
         int currentFrame = 0;
         int endingFrame = GridManager.instance.RocketFrameCountBetweenCubes() * LevelManager.instance.currentLevel.gridSize.x;
+
         while (currentFrame < endingFrame)
         {
             leftTopPos.x -= GameManager.instance.movementSO.rocketSpeed;
             leftTopSprite.transform.localPosition = leftTopPos;
+
+            if (currentFrame % GridManager.instance.RocketFrameCountBetweenCubes() == 0)
+            {
+                if (celltype == CellType.RocketHorizontal)
+                {
+                    GridManager.instance.Pop(new Index(index.x - (currentFrame / GridManager.instance.RocketFrameCountBetweenCubes()), index.y));
+                }
+                else if (celltype == CellType.RocketVertical)
+                {
+                    GridManager.instance.Pop(new Index(index.x, index.y - (currentFrame / GridManager.instance.RocketFrameCountBetweenCubes())));
+                }
+            }
 
             currentFrame++;
             await UniTask.NextFrame(GameManager.instance.GetCancellationToken());
