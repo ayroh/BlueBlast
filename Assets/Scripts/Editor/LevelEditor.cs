@@ -23,7 +23,7 @@ public class LevelEditor : EditorWindow
     private string cubeGreenGoalString;
     private string cubePurpleGoalString;
     private string balloonGoalString;
-    private string duckGoalString;
+    private string sheepGoalString;
 
     private int cubeYellowGoal;
     private int cubeRedGoal;
@@ -31,7 +31,7 @@ public class LevelEditor : EditorWindow
     private int cubeGreenGoal;
     private int cubePurpleGoal;
     private int balloonGoal;
-    private int duckGoal;
+    private int sheepGoal;
 
     [MenuItem("Level/Level Editor")]
     public static void Init()
@@ -91,9 +91,9 @@ public class LevelEditor : EditorWindow
 
                 if (GUILayout.Button(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(40), GUILayout.Height(40)))
                 {
-                    if ((gridSize - i - 1) == 0 && activeCellType == CellType.Duck)
+                    if ((gridSize - i - 1) == 0 && activeCellType == CellType.Sheep)
                     {
-                        Debug.LogError("LevelEditor DrawGridButtons: Cant place duck to first row!");
+                        Debug.LogError("LevelEditor DrawGridButtons: Cant place sheep to first row!");
                         continue;
                     }
                     cellTypeList[(gridSize - i - 1) + gridSize * j] = activeCellType;
@@ -168,10 +168,10 @@ public class LevelEditor : EditorWindow
             activeCellType = CellType.Balloon;
         }
 
-        content.image = cellTypeTextureDictionary[CellType.Duck];
+        content.image = cellTypeTextureDictionary[CellType.Sheep];
         if (GUILayout.Button(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(50), GUILayout.Height(50)))
         {
-            activeCellType = CellType.Duck;
+            activeCellType = CellType.Sheep;
         }
 
         GUILayout.EndHorizontal();
@@ -228,10 +228,10 @@ public class LevelEditor : EditorWindow
         balloonGoalString = EditorGUILayout.TextField("", balloonGoalString, GUILayout.Width(30), GUILayout.Height(20));
         GUILayout.EndVertical();
 
-        content.image = cellTypeTextureDictionary[CellType.Duck];
+        content.image = cellTypeTextureDictionary[CellType.Sheep];
         GUILayout.BeginVertical();
         GUILayout.Label(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(30), GUILayout.Height(50));
-        duckGoalString = EditorGUILayout.TextField("", duckGoalString, GUILayout.Width(30), GUILayout.Height(20));
+        sheepGoalString = EditorGUILayout.TextField("", sheepGoalString, GUILayout.Width(30), GUILayout.Height(20));
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
@@ -247,7 +247,7 @@ public class LevelEditor : EditorWindow
         cellTypeTextureDictionary.Add(CellType.CubeGreen, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/cube_4.png", typeof(Texture2D)));
         cellTypeTextureDictionary.Add(CellType.CubePurple, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/cube_5.png", typeof(Texture2D)));
         cellTypeTextureDictionary.Add(CellType.Balloon, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/balloon.png", typeof(Texture2D)));
-        cellTypeTextureDictionary.Add(CellType.Duck, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/duck.png", typeof(Texture2D)));
+        cellTypeTextureDictionary.Add(CellType.Sheep, (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Resources/UI/sheep.png", typeof(Texture2D)));
     }
 
     private static void InitializeCellList()
@@ -338,10 +338,10 @@ public class LevelEditor : EditorWindow
                 goalList.Add(CellType.Balloon, balloonGoal);
         }
 
-        if (Int32.TryParse(duckGoalString, out duckGoal))
+        if (Int32.TryParse(sheepGoalString, out sheepGoal))
         {
-            if (duckGoal > 0)
-                goalList.Add(CellType.Duck, duckGoal);
+            if (sheepGoal > 0)
+                goalList.Add(CellType.Sheep, sheepGoal);
         }
 
         return goalList;

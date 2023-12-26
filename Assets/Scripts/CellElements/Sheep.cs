@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class Duck : CellElement
+public class Sheep : CellElement
 {
 
     public override bool IsDestroyable() => false;
@@ -33,7 +33,7 @@ public class Duck : CellElement
     {
         base.Pop(doGoalAnimation);
 
-        SoundManager.instance.Play(Sound.DuckPop);
+        SoundManager.instance.Play(Sound.SheepPop);
     }
 }
 

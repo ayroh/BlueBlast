@@ -26,7 +26,7 @@ public class ParticleManager : Singleton<ParticleManager>
             case CellType.CubePurple:
                 color = new Color(178 / 255f, 17 / 255f, 187 / 255f);
                 break;
-            case CellType.Duck:
+            case CellType.Sheep:
             case CellType.RocketHorizontal:
             case CellType.RocketVertical:
             case CellType.Balloon:

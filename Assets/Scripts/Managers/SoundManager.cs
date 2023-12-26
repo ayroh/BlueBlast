@@ -12,7 +12,7 @@ public class SoundManager : Singleton<SoundManager>
     [SerializeField] private AudioClip balloonPopClip;
     [SerializeField] private AudioClip cubeCollectClip;
     [SerializeField] private AudioClip cubeExplodeClip;
-    [SerializeField] private AudioClip duckPopClip;
+    [SerializeField] private AudioClip sheepPopClip;
 
     public void Play(Sound sound)
     {
@@ -27,12 +27,12 @@ public class SoundManager : Singleton<SoundManager>
             case Sound.CubeExplode:
                 audioSource.PlayOneShot(cubeExplodeClip);
                 break;
-            case Sound.DuckPop:
-                audioSource.PlayOneShot(duckPopClip);
+            case Sound.SheepPop:
+                audioSource.PlayOneShot(sheepPopClip);
                 break;
         }
     }
 
 }
 
-public enum Sound { BalloonPop, CubeCollect, CubeExplode, DuckPop };
+public enum Sound { BalloonPop, CubeCollect, CubeExplode, SheepPop };

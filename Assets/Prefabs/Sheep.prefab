@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8392320218513809012}
   - component: {fileID: 5070050359412118776}
   m_Layer: 0
-  m_Name: DuckSprite
+  m_Name: SheepSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7633928163949391498}
   - component: {fileID: 5956847094730094263}
   m_Layer: 0
-  m_Name: Duck
+  m_Name: Sheep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -130,4 +130,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 5070050359412118776}
-  movementSO: {fileID: 11400000, guid: feaa437f76907e346a3378d336e2dcfb, type: 2}

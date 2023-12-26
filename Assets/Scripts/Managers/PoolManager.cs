@@ -12,7 +12,7 @@ public class PoolManager : Singleton<PoolManager>
     [SerializeField] private Cube cubePrefab;
     [SerializeField] private Rocket rocketPrefab;
     [SerializeField] private Balloon balloonPrefab;
-    [SerializeField] private Duck duckPrefab;
+    [SerializeField] private Sheep sheepPrefab;
     [SerializeField] private Goal goalPrefab;
     [SerializeField] private Particle particle1Prefab;
     [SerializeField] private Particle particle2Prefab;
@@ -25,11 +25,11 @@ public class PoolManager : Singleton<PoolManager>
     [SerializeField] private Sprite cubeGreenSprite;
     [SerializeField] private Sprite cubePurpleSprite;
     [SerializeField] private Sprite balloonSprite;
-    [SerializeField] private Sprite duckSprite;
+    [SerializeField] private Sprite sheepSprite;
 
     private Queue<Cube> availableCubes = new Queue<Cube>();
     private Queue<Rocket> availableRockets = new Queue<Rocket>();
-    private Queue<Duck> availableDucks = new Queue<Duck>();
+    private Queue<Sheep> availableSheeps = new Queue<Sheep>();
     private Queue<Balloon> availableBalloons = new Queue<Balloon>();
     private Queue<Goal> availableGoals = new Queue<Goal>();
     private Queue<Particle> availableParticle1 = new Queue<Particle>();
@@ -61,8 +61,8 @@ public class PoolManager : Singleton<PoolManager>
                 cellElement = GetCube();
                 (cellElement as Cube).SetSprite(cubePurpleSprite);
                 break;
-            case CellType.Duck:
-                cellElement = GetDuck();
+            case CellType.Sheep:
+                cellElement = GetSheep();
                 break;
             case CellType.RocketHorizontal:
                 cellElement = GetRocket();
@@ -125,24 +125,24 @@ public class PoolManager : Singleton<PoolManager>
         return newRocket;
     }
 
-    private Duck GetDuck()
+    private Sheep GetSheep()
     {
-        Duck duck;
-        if (availableDucks.Count == 0)
+        Sheep sheep;
+        if (availableSheeps.Count == 0)
         {
-            duck = CreateDuck();
+            sheep = CreateSheep();
         }
         else
         {
-            duck = availableDucks.Dequeue();
+            sheep = availableSheeps.Dequeue();
         }
-        return duck;
+        return sheep;
     }
 
-    private Duck CreateDuck()
+    private Sheep CreateSheep()
     {
-        Duck newDuck = Instantiate(duckPrefab, gridParent);
-        return newDuck;
+        Sheep newSheep = Instantiate(sheepPrefab, gridParent);
+        return newSheep;
     }
 
     private Balloon GetBalloon()
@@ -183,8 +183,8 @@ public class PoolManager : Singleton<PoolManager>
             case CellType.CubePurple:
                 availableCubes.Enqueue(cellElement as Cube);
                 break;
-            case CellType.Duck:
-                availableDucks.Enqueue(cellElement as Duck);
+            case CellType.Sheep:
+                availableSheeps.Enqueue(cellElement as Sheep);
                 break;
             case CellType.RocketHorizontal:
             case CellType.RocketVertical:
@@ -237,8 +237,8 @@ public class PoolManager : Singleton<PoolManager>
             case CellType.CubePurple:
                 goalSprite = cubePurpleSprite;
                 break;
-            case CellType.Duck:
-                goalSprite = duckSprite;
+            case CellType.Sheep:
+                goalSprite = sheepSprite;
                 break;
             case CellType.Balloon:
                 goalSprite = balloonSprite;

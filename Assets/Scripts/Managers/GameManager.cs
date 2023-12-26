@@ -93,7 +93,7 @@ public class GameManager : Singleton<GameManager>
                     GridManager.instance.FillColumn(columnsToFill[i]);
                 }
                 break;
-            case CellType.Duck:
+            case CellType.Sheep:
                 return;
             case CellType.RocketHorizontal:
             case CellType.RocketVertical:

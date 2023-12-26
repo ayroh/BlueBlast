@@ -120,7 +120,7 @@ public class CellElement : MonoBehaviour
 
     public virtual void Pop(bool doGoalAnimation = true) => Release(doGoalAnimation);
 
-    public virtual bool IsDestroyable() => true;// celltype == CellType.Duck ? false : true;
+    public virtual bool IsDestroyable() => true;// celltype == CellType.Sheep ? false : true;
 
     public virtual void Release(bool doGoalAnimation = true) => PoolManager.instance.Release(this, doGoalAnimation);
 }
@@ -183,7 +183,7 @@ public enum CellType
     CubeBlue,
     CubeGreen,
     CubePurple,
-    Duck,
+    Sheep,
     RocketHorizontal,
     RocketVertical,
     Balloon
