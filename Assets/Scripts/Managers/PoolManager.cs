@@ -36,6 +36,40 @@ public class PoolManager : Singleton<PoolManager>
     private Queue<Particle> availableParticle2 = new Queue<Particle>();
     private Queue<Particle> availableParticleStar = new Queue<Particle>();
 
+    private void Start()
+    {
+        Pool();
+    }
+
+    private void Pool()
+    {
+        int count = 0;
+
+        List<Goal> tempGoals = new List<Goal>();
+        count = 8;
+        for(int i = 0;  i < count;i++)
+            tempGoals.Add(GetGoal(CellType.CubeYellow));
+        for (int i = count - 1;i >= 0;i--)
+        {
+            tempGoals[i].Release();
+            tempGoals.RemoveAt(i);
+        }
+
+        List<Particle> tempParticles = new List<Particle>();
+        count = 6;
+        for (int i = 0;i < count;i++)
+        {
+            tempParticles.Add(GetParticle1());
+            tempParticles.Add(GetParticle2());
+            tempParticles.Add(GetParticleStar());
+        }
+        for (int i = 3 * count - 1;i >= 0;i--)
+        {
+            ReleaseParticle(tempParticles[i]);
+            tempParticles.RemoveAt(i);
+        }
+    }
+
     public CellElement Get(CellType cellType)
     {
         CellElement cellElement = null;
@@ -260,6 +294,7 @@ public class PoolManager : Singleton<PoolManager>
         goal.gameObject.SetActive(false);
         goal.SetImage(null);
         goal.SetCellType(CellType.Empty);
+        goal.SetCountTextActive(false);
 
         availableGoals.Enqueue(goal);
     }

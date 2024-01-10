@@ -4,18 +4,30 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class LevelManager : Singleton<LevelManager>
 {
     public LevelData currentLevel { get; private set; }
 
+    private const string levelPath = "/Resources/Levels";
 
-    public void LoadLevel(string level)
+    public int numberOfLevels;
+
+    private void Start()
     {
+        CountNumberOfLevels();
+    }
+
+    public void LoadLevel(string level = default)
+    {
+        if(level == default)
+            level = GameManager.instance.playerData.level;
+
         string levelData;
         try
         {
-            levelData = File.ReadAllText(Application.dataPath + "/Resources/level" + level + ".json");
+            levelData = Resources.Load<TextAsset>("Levels/level" + level).text;
             currentLevel = JsonConvert.DeserializeObject<LevelData>(levelData);
         }
         catch (Exception)
@@ -29,35 +41,47 @@ public class LevelManager : Singleton<LevelManager>
 
             currentLevel.cells = cells;
 
-            Dictionary<CellType, int> dict = new Dictionary<CellType, int>();
-            dict.Add(CellType.CubePurple, 50);
-            dict.Add(CellType.CubeRed, 50);
+            Dictionary<CellType, int> dict = new Dictionary<CellType, int>()
+            {
+                {CellType.CubePurple, 50 },
+                {CellType.CubeRed, 50 }
+            };
 
             currentLevel.goals = dict;
             currentLevel.level = "Backup";
             currentLevel.gridSize = new Size(9, 9);
             currentLevel.numberOfMoves = 80;
+            currentLevel.dropables = new List<CellType> { CellType.CubeBlue, CellType.CubeRed, CellType.CubeYellow, CellType.CubePurple, CellType.CubeGreen };
         }
     }
 
+    
     public static void SaveLevel(LevelData data)
     {
         string json = JsonConvert.SerializeObject(data);
-        File.WriteAllText(Application.dataPath + "/Resources/level" + data.level + ".json", json);
+        File.WriteAllText(Application.persistentDataPath + levelPath + "/level" + data.level + ".json", json);
         Debug.Log("LevelSaved");
     }
 
-    public CellType ConvertLevel(int x, int y)
+    private void CountNumberOfLevels()
     {
-        if (currentLevel == null || x < 0 || y < 0 || x >= currentLevel.gridSize.x || y >= currentLevel.gridSize.y)
+        DirectoryInfo dir = new DirectoryInfo(Application.dataPath + levelPath);
+        numberOfLevels = dir.GetFiles("*.meta").Length;
+    }
+
+    public CellType ConvertLevel(Index index)
+    {
+        if (currentLevel == null || index.x < 0 || index.y < 0 || index.x >= currentLevel.gridSize.x || index.y >= currentLevel.gridSize.y)
         {
             Debug.LogError("Cannot convert level");
             return CellType.Empty;
         }
-        return currentLevel.cells[x * currentLevel.gridSize.x + y];
+        return currentLevel.cells[index.x * currentLevel.gridSize.x + index.y];
     }
 
 }
+
+
 
 public class LevelData
 {
@@ -66,6 +90,7 @@ public class LevelData
     public List<CellType> cells;
     public Dictionary<CellType, int> goals;
     public int numberOfMoves;
+    public List<CellType> dropables;
 }
 
 public struct Size

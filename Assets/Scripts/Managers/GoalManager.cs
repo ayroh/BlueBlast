@@ -65,7 +65,7 @@ public class GoalManager : Singleton<GoalManager>
 
     public async void SendToGoal(CellElement cellElement, bool doAnimation)
     {
-        if (!IsGoalable(cellElement.celltype))
+        if (!IsGoalable(cellElement.celltype) || GameManager.gameState != GameState.Started)
             return;
 
         Goal targetGoal = goals.Find((goal) => goal.GetCellType() == cellElement.celltype);
@@ -97,15 +97,22 @@ public class GoalManager : Singleton<GoalManager>
 
     public void CheckEnd()
     {
+        if (GameManager.gameState != GameState.Started)
+            return;
+
         Goal endedGoals = goals.Find(goal => goal.count > 0);
         if (endedGoals != null && currentNumberOfMoves > 0)
             return;
-        if (endedGoals == null)
-            Debug.Log("SUCCESS!!!!");
-        else
-            Debug.Log("FAILURE!!!!!");
+
+        GameManager.instance.SetState(GameState.LoadingNextLevel);
 
         InputManager.instance.SetInputState(false);
+
+        GameManager.instance.IncrementPlayerDataLevel();
+        GameManager.instance.SavePlayerData(GameManager.instance.playerData);
+        MenuManager.instance.StartLevelPhaseAnimation(endedGoals == null);
+
+        InputManager.instance.SetInputState(true);
     }
 
 

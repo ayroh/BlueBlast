@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class InputManager : Singleton<InputManager>
@@ -20,15 +19,17 @@ public class InputManager : Singleton<InputManager>
 
     void Update()
     {
-        if (inputCount != 0)
+        if (inputCount != 0 || GameManager.gameState != GameState.Started)
             return;
 
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
             Index index = GridManager.instance.GetGridIndex(mousePos);
+
             if (index == Index.Default || !GridManager.instance.IsIndexActive(index))
                 return;
+
             GameManager.instance.OnCellClickedAsync(index);
         }
     }

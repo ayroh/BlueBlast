@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
@@ -27,23 +26,53 @@ public class GridManager : Singleton<GridManager>
 
     private List<List<CellElement>> cells = new List<List<CellElement>>();
 
-    private CellType[] cubeTypes = {
-            CellType.CubeBlue,
-            CellType.CubeGreen,
-            CellType.CubePurple,
-            CellType.CubeYellow,
-            CellType.CubeRed,
-        };
+    public bool CellAvailable(CellElement cellElement) => (cellElement != null && cellElement.state == CellElementState.Active);
 
-
-    public void StartGame()
+    public void InitialiseLevel()
     {
-        Application.targetFrameRate = 60;
+        LevelManager.instance.LoadLevel();
 
-        LevelManager.instance.LoadLevel("Test");
+        ResetGrid();
+
+
+        ResizeBorder();
+        CreateGridElements();
+
+        GoalManager.instance.SetCurrentLevelGoals();
+        GoalManager.instance.SetNumberOfMoves();
+
+        borderLeftBottom = new Vector2(spawnPoint.x - (cellSize.x * borderScale) / 2, spawnPoint.y - (cellSize.y * borderScale) / 2);
+        border.gameObject.SetActive(true);
+
+        MenuManager.instance.SetInGameMenu(true);
+
+        GameManager.instance.SetState(GameState.Started);
+    }
+
+    public void NextLevel()
+    {
+
+        InitialiseLevel();
+    }
+
+    private void ResetGrid()
+    {
+        for (int i = 0;i < cells.Count;++i)
+        {
+            for (int j = 0;j < cells[i].Count;++j)
+            {
+                if (cells[i][j] == null)
+                    continue;
+
+                cells[i][j].Release();
+            }
+            cells[i].Clear();
+        }
+        cells.Clear();
 
         for (int i = 0;i < LevelManager.instance.currentLevel.gridSize.x;++i)
             cells.Add(new List<CellElement>());
+
         for (int i = 0;i < LevelManager.instance.currentLevel.gridSize.x;++i)
         {
             for (int j = 0;j < LevelManager.instance.currentLevel.gridSize.x;++j)
@@ -51,15 +80,7 @@ public class GridManager : Singleton<GridManager>
                 cells[i].Add(null);
             }
         }
-        ResizeBorder();
-        CreateGridElements();
-        GoalManager.instance.SetCurrentLevelGoals();
-        GoalManager.instance.SetNumberOfMoves();
-        borderLeftBottom = new Vector2(spawnPoint.x - (cellSize.x * borderScale) / 2, spawnPoint.y - (cellSize.y * borderScale) / 2);
-        border.gameObject.SetActive(true);
     }
-
-
 
 
     public void ReorganizeColumn(int column)
@@ -127,7 +148,7 @@ public class GridManager : Singleton<GridManager>
             return;
 
         CellElement cellElement = GetCellElement(index);
-        if (cellElement != null && cellElement.state == CellElementState.Active && cellElement.IsDestroyable())
+        if (CellAvailable(cellElement) && cellElement.IsDestroyable())
             cellElement.Pop();
     }
 
@@ -270,8 +291,7 @@ public class GridManager : Singleton<GridManager>
         {
             for (int j = 0;j < LevelManager.instance.currentLevel.gridSize.y;++j)
             {
-
-                CellElement cell = PoolManager.instance.Get(LevelManager.instance.ConvertLevel(i, j));
+                CellElement cell = PoolManager.instance.Get(LevelManager.instance.ConvertLevel(new Index(i, j)));
                 if (cell == null)
                 {
                     cell = PoolManager.instance.Get(RandomCube());
@@ -324,7 +344,7 @@ public class GridManager : Singleton<GridManager>
 
     public CellType RandomRocket() => (UnityEngine.Random.Range(0, 2) == 0) ? CellType.RocketHorizontal : CellType.RocketVertical;
 
-    public CellType RandomCube() => cubeTypes[UnityEngine.Random.Range(0, cubeTypes.Length)];
+    public CellType RandomCube() =>  LevelManager.instance.currentLevel.dropables[UnityEngine.Random.Range(0, LevelManager.instance.currentLevel.dropables.Count)];//cubeTypes[UnityEngine.Random.Range(0, cubeTypes.Length)];
 
 
 }

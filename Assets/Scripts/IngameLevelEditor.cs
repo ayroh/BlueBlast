@@ -299,7 +299,7 @@ public class IngameLevelEditor : MonoBehaviour
         };
         LevelManager.SaveLevel(levelData);
         ManagersParent.SetActive(true);
-        GridManager.instance.StartGame();
+        GridManager.instance.NextLevel();
         BlackScreen.SetActive(false);
         gameObject.SetActive(false);
     }

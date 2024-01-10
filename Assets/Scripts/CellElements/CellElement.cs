@@ -123,6 +123,7 @@ public class CellElement : MonoBehaviour
     public virtual bool IsDestroyable() => true;// celltype == CellType.Sheep ? false : true;
 
     public virtual void Release(bool doGoalAnimation = true) => PoolManager.instance.Release(this, doGoalAnimation);
+
 }
 
 public struct Index

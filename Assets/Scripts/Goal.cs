@@ -34,7 +34,7 @@ public class Goal : MonoBehaviour
     {
         count = newCount;
         countText.text = count.ToString();
-        countText.gameObject.SetActive(true);
+        SetCountTextActive(true);
     }
 
     public void SetImage(Sprite newSprite)
@@ -42,6 +42,8 @@ public class Goal : MonoBehaviour
         image.sprite = newSprite;
         image.SetNativeSize();
     }
+
+    public void SetCountTextActive(bool choice) => countText.gameObject.SetActive(choice);
 
     public void SetCellType(CellType newCellType) => cellType = newCellType;
 

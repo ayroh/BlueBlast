@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ public class LevelEditor : EditorWindow
 
     private static Dictionary<CellType, Texture2D> cellTypeTextureDictionary = new Dictionary<CellType, Texture2D>();
     private static List<CellType> cellTypeList = new List<CellType>();
+    private static HashSet<CellType> dropables = new HashSet<CellType>();
+
     private CellType activeCellType = CellType.Empty;
 
     private string cubeYellowGoalString;
@@ -60,6 +63,8 @@ public class LevelEditor : EditorWindow
         GUILayout.Space(10);
         movesString = EditorGUILayout.TextField("Number of Moves: ", movesString);
 
+        DrawLevelDropables();
+
         Repaint();
     }
 
@@ -99,7 +104,6 @@ public class LevelEditor : EditorWindow
                     cellTypeList[(gridSize - i - 1) + gridSize * j] = activeCellType;
                 }
             }
-
             GUILayout.EndHorizontal();
         }
 
@@ -113,6 +117,43 @@ public class LevelEditor : EditorWindow
         {
             SaveLevelData();
         }
+    }
+
+    private void DrawLevelDropables()
+    {
+        GUILayout.Space(20);
+        GUILayout.Label("Dropables");
+        GUILayout.Space(10);
+        GUILayout.BeginHorizontal();
+
+        var content = new GUIContent();
+        foreach(CellType cellType in dropables.ToList())
+        {
+            content.image = cellTypeTextureDictionary[cellType];
+            if (GUILayout.Button(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(50), GUILayout.Height(50)))
+            {
+                    dropables.Remove(cellType);
+            }
+        }
+        GUILayout.EndHorizontal();
+        
+
+        GUILayout.Space(20);
+        GUILayout.Label("Non-Dropables");
+        GUILayout.Space(10);
+        GUILayout.BeginHorizontal();
+
+        foreach (CellType cellType in cellTypeTextureDictionary.Keys)
+        {
+            if (dropables.Contains(cellType))
+                continue;
+            content.image = cellTypeTextureDictionary[cellType];
+            if (GUILayout.Button(content, GUILayout.MinWidth(5), GUILayout.MinHeight(40), GUILayout.Width(50), GUILayout.Height(50)))
+            {
+                dropables.Add(cellType);
+            }
+        }
+        GUILayout.EndHorizontal();
     }
 
 
@@ -277,6 +318,12 @@ public class LevelEditor : EditorWindow
             return;
         }
 
+        if(dropables.Count() == 0)
+        {
+            Debug.LogError("LevelEditor SaveLevelData: You didn't set any dropables.");
+            return;
+        }
+
 
         var levelData = new LevelData
         {
@@ -284,7 +331,8 @@ public class LevelEditor : EditorWindow
             cells = cellTypeList,
             level = "Test",
             gridSize = new Size(gridSize, gridSize),
-            numberOfMoves = moves
+            numberOfMoves = moves,
+            dropables = dropables.ToList()
         };
         LevelManager.SaveLevel(levelData);
     }

@@ -1,6 +1,9 @@
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using TMPro;
 using UnityEngine;
@@ -8,6 +11,9 @@ using UnityEngine;
 public class GameManager : Singleton<GameManager>
 {
     public MovementSO movementSO;
+    [HideInInspector] public PlayerData playerData { get; private set; }
+    public static GameState gameState { get; private set; }
+
 
     private List<CellElement> popCells = new List<CellElement>();
     private List<Balloon> popBalloons = new List<Balloon>();
@@ -17,10 +23,22 @@ public class GameManager : Singleton<GameManager>
     private CancellationToken token;
     public CancellationToken GetCancellationToken() => token;
 
+    private const string playerDataPath = "/Resources/Player/";
+
     private void Start()
     {
         token = source.Token;
-        GridManager.instance.StartGame();
+        CheckPlayerDataPath();
+    }
+
+    int count = 0;
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            print("captured");
+            ScreenCapture.CaptureScreenshot("C:\\Users\\Patates\\Desktop\\Capture" + (++count).ToString() + ".png");
+        }
     }
 
 
@@ -33,7 +51,7 @@ public class GameManager : Singleton<GameManager>
     {
         ClearLists();
         CellElement cellElement = GridManager.instance.GetGridElement(index);
-        if (cellElement == null || cellElement.state != CellElementState.Active)
+        if (!GridManager.instance.CellAvailable(cellElement))
             return;
 
         switch (cellElement.celltype)
@@ -120,7 +138,7 @@ public class GameManager : Singleton<GameManager>
 
         for (int i = 0;i < adjacentElements.Count;++i)
         {
-            if (adjacentElements[i] != null && adjacentElements[i].state == CellElementState.Active)
+            if(GridManager.instance.CellAvailable(adjacentElements[i]))
             {
                 if (adjacentElements[i].celltype == CellType.Balloon && !popBalloons.Contains(adjacentElements[i] as Balloon))
                 {
@@ -135,6 +153,63 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    #region Player Data
+    public void ReadPlayerData()
+    {
+        try
+        {
+            string playerDataString = File.ReadAllText(Application.persistentDataPath + playerDataPath + "Player.json");
+            playerData = JsonConvert.DeserializeObject<PlayerData>(playerDataString);
+        }
+        catch (Exception)
+        {
+            //playerData = new PlayerData()
+            //{
+            //    name = "Temp",
+            //    level = "1"
+            //};
+        }
+    }
+
+    public void IncrementPlayerDataLevel()
+    {
+        int currentLevel;
+        if (Int32.TryParse(playerData.level, out currentLevel))
+        {
+            if(LevelManager.instance.numberOfLevels != currentLevel)
+                playerData.level = (++currentLevel).ToString();
+        }
+    }
+
+    public void SavePlayerData(PlayerData data)
+    {
+        string json = JsonConvert.SerializeObject(data);
+        File.WriteAllText(Application.persistentDataPath + playerDataPath + "Player.json", json);
+        //Debug.Log("PlayerSaved");
+    }
+
+    public void SetNewPlayer(PlayerData newPlayerData) => playerData = newPlayerData;
+
+    private void CheckPlayerDataPath()
+    {
+
+        DirectoryInfo dir = new DirectoryInfo(Application.persistentDataPath + "/Resources");
+        if (!dir.Exists)
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "/Resources");
+        }
+
+
+        dir = new DirectoryInfo(Application.persistentDataPath + "/Resources/Player");
+        if (!dir.Exists)
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "/Resources/Player");
+        }
+    }
+
+
+
+    #endregion
 
     private void ClearLists()
     {
@@ -143,4 +218,23 @@ public class GameManager : Singleton<GameManager>
         popBalloons.Clear();
     }
 
+    public void SetState(GameState newState)
+    {
+        gameState = newState;
+    }
+
+}
+
+
+public class PlayerData
+{
+    public string name;
+    public string level;
+}
+
+public enum GameState
+{
+    Menu,
+    Started,
+    LoadingNextLevel
 }
