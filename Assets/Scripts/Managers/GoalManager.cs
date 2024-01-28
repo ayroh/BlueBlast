@@ -110,9 +110,14 @@ public class GoalManager : Singleton<GoalManager>
 
         GameManager.instance.IncrementPlayerDataLevel();
         GameManager.instance.SavePlayerData(GameManager.instance.playerData);
-        MenuManager.instance.StartLevelPhaseAnimation(endedGoals == null);
+        MenuManager.instance.StartLevelPhaseAnimation(true);
+        AdManager.instance.ShowBannerAd();
 
         InputManager.instance.SetInputState(true);
+    }
+
+    public void AdEndNextLevelCallback()
+    {
     }
 
 
@@ -126,6 +131,12 @@ public class GoalManager : Singleton<GoalManager>
     public void SetNumberOfMoves()
     {
         currentNumberOfMoves = LevelManager.instance.currentLevel.numberOfMoves;
+        numberOfMovesText.text = currentNumberOfMoves.ToString();
+    }
+
+    public void AddNumberOfMoves(int plus)
+    {
+        currentNumberOfMoves += plus;
         numberOfMovesText.text = currentNumberOfMoves.ToString();
     }
 

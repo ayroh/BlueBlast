@@ -13,7 +13,16 @@ public class LevelManager : Singleton<LevelManager>
     private const string levelPath = "/Resources/Levels";
 
     public int numberOfLevels;
-
+[System.Serializable]
+public class Word
+{
+    public string word, description;
+    public Word(string tempWord, string tempDescription)
+    {
+        word = tempWord;
+        description = tempDescription;
+    }
+}
     private void Start()
     {
         CountNumberOfLevels();
